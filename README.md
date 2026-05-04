@@ -1,2 +1,2 @@
 # verbose-succotash
-Code that is developed
+Code that I have created and want to share with the world.
