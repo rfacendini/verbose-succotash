@@ -7,10 +7,13 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 gis = GIS("home")
 
+# Create hosted feature layer / hosted table and supply the item ID below
 patch_table_item = gis.content.get('hosted_layer_id_here')
 patch_table = patch_table_item.tables[0]
 api_url ="https://content.esri.com/patch_notification/patches.json"
 patch_list = []
+
+# Specify the version of ArcGIS Enterprise you want a list of patches for
 target_version = "11.5"
 new_vals = []
 
@@ -57,6 +60,7 @@ email_patches = patch_table.query(where="installed = 'no'")
 email_df = email_patches.df
 email_patch_name = email_df['patchname'].tolist()
 
+# Make sure email settings are configured within your Portal for ArcGIS settings, or this will not return values
 portal_admin_url = f"{gis._url.replace('/sharing/rest', '')}/portaladmin/system/emailSettings"
 params = {
     'f':'json',
@@ -70,6 +74,8 @@ if response.status_code == 200:
 msg = MIMEMultipart("html")
 msg["Subject"] = "Enterprise Patches to Install"
 msg["From"] = email_config["mailFrom"]
+
+# Supply the email you want the list of patches sent to
 msg["To"] = "your_email@example.net"
 
 bullet_list = "".join([f"<li>{val}</li>" for val in email_patch_name])
